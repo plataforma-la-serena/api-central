@@ -6,6 +6,7 @@ import { AuthModule } from "./auth/auth.module";
 import { BookingsModule } from "./bookings/bookings.module";
 import { ChatModule } from "./chat/chat.module";
 import { InternalModule } from "./internal/internal.module";
+import { MediaModule } from "./media/media.module";
 import { MetricsModule } from "./metrics/metrics.module";
 import { PrismaModule } from "./prisma/prisma.module";
 
@@ -17,6 +18,7 @@ import { PrismaModule } from "./prisma/prisma.module";
     ApartmentsModule,
     BookingsModule,
     ChatModule,
+    MediaModule,
     MetricsModule,
     InternalModule,
   ],
