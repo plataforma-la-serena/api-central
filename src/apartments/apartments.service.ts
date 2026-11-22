@@ -18,6 +18,7 @@ const contextSelect = {
   pricePerNight: true,
   capacity: true,
   features: true,
+  images: true,
 } satisfies Prisma.ApartmentSelect;
 
 @Injectable()
