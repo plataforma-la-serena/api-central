@@ -46,7 +46,18 @@ export class MediaController {
       throw new BadRequestException("El archivo no es una imagen válida");
     }
 
-    return this.media.create(dto.mimeType, data);
+    return this.media.create(dto.mimeType, data, dto.sourceUrl);
+  }
+
+  @Get(":id/source")
+  async source(@Param("id") id: string) {
+    const image = await this.media.findSource(id);
+
+    if (!image) {
+      throw new NotFoundException("Imagen no encontrada");
+    }
+
+    return { sourceUrl: image.sourceUrl ?? null };
   }
 
   @Get(":id")

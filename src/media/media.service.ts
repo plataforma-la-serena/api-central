@@ -5,9 +5,9 @@ import { PrismaService } from "../prisma/prisma.service";
 export class MediaService {
   constructor(private readonly prisma: PrismaService) {}
 
-  async create(mimeType: string, data: Uint8Array<ArrayBuffer>) {
+  async create(mimeType: string, data: Uint8Array<ArrayBuffer>, sourceUrl?: string) {
     const image = await this.prisma.apartmentImage.create({
-      data: { mimeType, data },
+      data: { mimeType, data, sourceUrl },
       select: { id: true },
     });
 
@@ -18,6 +18,13 @@ export class MediaService {
     return this.prisma.apartmentImage.findUnique({
       where: { id },
       select: { mimeType: true, data: true },
+    });
+  }
+
+  findSource(id: string) {
+    return this.prisma.apartmentImage.findUnique({
+      where: { id },
+      select: { sourceUrl: true },
     });
   }
 }
