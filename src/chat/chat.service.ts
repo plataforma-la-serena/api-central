@@ -111,7 +111,14 @@ export class ChatService {
   }
 
   async windowByPhone(phone: string) {
-    const session = await this.ensureSession(phone);
+    const session = await this.prisma.chatSession.findUnique({
+      where: { phoneNumber: phone },
+    });
+
+    if (!session) {
+      return { open: false, lastUserMessageAt: null };
+    }
+
     const lastUserMessage = await this.prisma.chatMessage.findFirst({
       where: { sessionId: session.id, role: MessageRole.USER },
       orderBy: { createdAt: "desc" },
