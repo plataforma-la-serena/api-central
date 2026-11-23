@@ -74,6 +74,18 @@ export class ChatService {
     });
   }
 
+  async setLeadByPhone(
+    phone: string,
+    name?: string,
+    wantsReservation?: boolean,
+  ) {
+    const session = await this.ensureSession(phone);
+    return this.prisma.chatSession.update({
+      where: { id: session.id },
+      data: { customerName: name, wantsReservation },
+    });
+  }
+
   private async ensureSession(phone: string) {
     return this.prisma.chatSession.upsert({
       where: { phoneNumber: phone },

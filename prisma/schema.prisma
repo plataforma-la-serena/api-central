@@ -82,6 +82,8 @@ model AvailabilityBlock {
 model ChatSession {
   id              String   @id @default(uuid())
   phoneNumber     String   @unique @map("phone_number")
+  customerName    String?  @map("customer_name")
+  wantsReservation Boolean @default(false) @map("wants_reservation")
   botActive       Boolean  @default(true) @map("bot_active")
   lastInteraction DateTime @default(now()) @map("last_interaction")
   createdAt       DateTime @default(now()) @map("created_at")

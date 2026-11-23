@@ -12,6 +12,7 @@ import { ServiceTokenGuard } from "../auth/service-token.guard";
 import { ChatService } from "../chat/chat.service";
 import { AppendMessageDto } from "../chat/dto/append-message.dto";
 import { UpdateChatSessionDto } from "../chat/dto/update-chat-session.dto";
+import { UpdateLeadDto } from "./dto/update-lead.dto";
 
 @UseGuards(ServiceTokenGuard)
 @Controller("internal")
@@ -39,5 +40,14 @@ export class InternalController {
   @Patch("chat-sessions/:phone/bot")
   bot(@Param("phone") phone: string, @Body() dto: UpdateChatSessionDto) {
     return this.chat.setBotActiveByPhone(phone, dto.botActive);
+  }
+
+  @Patch("chat-sessions/:phone/lead")
+  lead(@Param("phone") phone: string, @Body() dto: UpdateLeadDto) {
+    return this.chat.setLeadByPhone(
+      phone,
+      dto.name,
+      dto.wantsReservation,
+    );
   }
 }
