@@ -8,4 +8,8 @@ export class UpdateChatSessionDto {
   @IsOptional()
   @IsBoolean()
   wantsReservation?: boolean;
+
+  @IsOptional()
+  @IsBoolean()
+  wantsHuman?: boolean;
 }

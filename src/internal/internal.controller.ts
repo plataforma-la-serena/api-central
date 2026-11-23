@@ -48,6 +48,12 @@ export class InternalController {
       phone,
       dto.name,
       dto.wantsReservation,
+      dto.wantsHuman,
     );
+  }
+
+  @Get("chat-sessions/:phone/window")
+  window(@Param("phone") phone: string) {
+    return this.chat.windowByPhone(phone);
   }
 }

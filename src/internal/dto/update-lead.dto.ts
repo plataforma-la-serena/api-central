@@ -16,4 +16,8 @@ export class UpdateLeadDto {
   @IsOptional()
   @IsBoolean()
   wantsReservation?: boolean;
+
+  @IsOptional()
+  @IsBoolean()
+  wantsHuman?: boolean;
 }

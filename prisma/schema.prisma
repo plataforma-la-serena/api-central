@@ -84,6 +84,7 @@ model ChatSession {
   phoneNumber     String   @unique @map("phone_number")
   customerName    String?  @map("customer_name")
   wantsReservation Boolean @default(false) @map("wants_reservation")
+  wantsHuman      Boolean @default(false) @map("wants_human")
   botActive       Boolean  @default(true) @map("bot_active")
   lastInteraction DateTime @default(now()) @map("last_interaction")
   createdAt       DateTime @default(now()) @map("created_at")

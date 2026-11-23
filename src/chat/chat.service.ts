@@ -46,7 +46,11 @@ export class ChatService {
 
   async updateSession(
     id: string,
-    dto: { botActive?: boolean; wantsReservation?: boolean },
+    dto: {
+      botActive?: boolean;
+      wantsReservation?: boolean;
+      wantsHuman?: boolean;
+    },
   ) {
     await this.findSession(id);
     return this.prisma.chatSession.update({
@@ -54,6 +58,7 @@ export class ChatService {
       data: {
         botActive: dto.botActive,
         wantsReservation: dto.wantsReservation,
+        wantsHuman: dto.wantsHuman,
       },
     });
   }
@@ -92,12 +97,34 @@ export class ChatService {
     phone: string,
     name?: string,
     wantsReservation?: boolean,
+    wantsHuman?: boolean,
   ) {
     const session = await this.ensureSession(phone);
     return this.prisma.chatSession.update({
       where: { id: session.id },
-      data: { customerName: name, wantsReservation },
+      data: {
+        customerName: name,
+        wantsReservation,
+        wantsHuman,
+      },
     });
+  }
+
+  async windowByPhone(phone: string) {
+    const session = await this.ensureSession(phone);
+    const lastUserMessage = await this.prisma.chatMessage.findFirst({
+      where: { sessionId: session.id, role: MessageRole.USER },
+      orderBy: { createdAt: "desc" },
+    });
+
+    const open =
+      lastUserMessage !== null &&
+      Date.now() - lastUserMessage.createdAt.getTime() < 24 * 60 * 60 * 1000;
+
+    return {
+      open,
+      lastUserMessageAt: lastUserMessage?.createdAt ?? null,
+    };
   }
 
   private async ensureSession(phone: string) {
