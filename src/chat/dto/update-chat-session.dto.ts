@@ -1,6 +1,11 @@
-import { IsBoolean } from "class-validator";
+import { IsBoolean, IsOptional } from "class-validator";
 
 export class UpdateChatSessionDto {
+  @IsOptional()
   @IsBoolean()
-  botActive!: boolean;
+  botActive?: boolean;
+
+  @IsOptional()
+  @IsBoolean()
+  wantsReservation?: boolean;
 }

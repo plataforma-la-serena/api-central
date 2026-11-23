@@ -11,7 +11,7 @@ import { ApartmentsService } from "../apartments/apartments.service";
 import { ServiceTokenGuard } from "../auth/service-token.guard";
 import { ChatService } from "../chat/chat.service";
 import { AppendMessageDto } from "../chat/dto/append-message.dto";
-import { UpdateChatSessionDto } from "../chat/dto/update-chat-session.dto";
+import { UpdateBotDto } from "./dto/update-bot.dto";
 import { UpdateLeadDto } from "./dto/update-lead.dto";
 
 @UseGuards(ServiceTokenGuard)
@@ -38,7 +38,7 @@ export class InternalController {
   }
 
   @Patch("chat-sessions/:phone/bot")
-  bot(@Param("phone") phone: string, @Body() dto: UpdateChatSessionDto) {
+  bot(@Param("phone") phone: string, @Body() dto: UpdateBotDto) {
     return this.chat.setBotActiveByPhone(phone, dto.botActive);
   }
 

@@ -37,6 +37,6 @@ export class ChatController {
 
   @Patch(":id")
   update(@Param("id") id: string, @Body() dto: UpdateChatSessionDto) {
-    return this.chat.setBotActive(id, dto.botActive);
+    return this.chat.updateSession(id, dto);
   }
 }

@@ -44,6 +44,20 @@ export class ChatService {
     });
   }
 
+  async updateSession(
+    id: string,
+    dto: { botActive?: boolean; wantsReservation?: boolean },
+  ) {
+    await this.findSession(id);
+    return this.prisma.chatSession.update({
+      where: { id },
+      data: {
+        botActive: dto.botActive,
+        wantsReservation: dto.wantsReservation,
+      },
+    });
+  }
+
   async getSessionByPhone(phone: string) {
     const session = await this.ensureSession(phone);
     const messages = await this.prisma.chatMessage.findMany({
