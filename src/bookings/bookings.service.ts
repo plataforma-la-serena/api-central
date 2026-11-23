@@ -53,17 +53,35 @@ export class BookingsService {
 
   async update(id: string, dto: UpdateBookingDto) {
     const booking = await this.findBooking(id);
+    const apartmentId = dto.apartmentId ?? booking.apartmentId;
     const startDate = dto.startDate ? new Date(dto.startDate) : booking.startDate;
     const endDate = dto.endDate ? new Date(dto.endDate) : booking.endDate;
     this.assertRange(startDate, endDate);
 
-    if (dto.startDate || dto.endDate) {
-      await this.assertAvailable(booking.apartmentId, startDate, endDate, id);
+    if (dto.apartmentId) {
+      const apartment = await this.prisma.apartment.findUnique({
+        where: { id: apartmentId },
+        select: { id: true },
+      });
+      if (!apartment) {
+        throw new NotFoundException("Departamento no encontrado");
+      }
+    }
+
+    if (dto.startDate || dto.endDate || dto.apartmentId) {
+      await this.assertAvailable(apartmentId, startDate, endDate, id);
     }
 
     return this.prisma.booking.update({
       where: { id },
-      data: { status: dto.status, notes: dto.notes, startDate, endDate },
+      data: {
+        status: dto.status,
+        notes: dto.notes,
+        startDate,
+        endDate,
+        apartmentId,
+        customerPhone: dto.customerPhone,
+      },
     });
   }
 
