@@ -109,6 +109,7 @@ model ApartmentImage {
   mimeType  String   @map("mime_type")
   data      Bytes
   sourceUrl String?  @map("source_url")
+  cropData  Json?    @map("crop_data")
   createdAt DateTime @default(now()) @map("created_at")
 
   @@map("apartment_images")

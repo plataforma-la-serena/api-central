@@ -46,7 +46,12 @@ export class MediaController {
       throw new BadRequestException("El archivo no es una imagen válida");
     }
 
-    return this.media.create(dto.mimeType, data, dto.sourceUrl);
+    return this.media.create(
+      dto.mimeType,
+      data,
+      dto.sourceUrl,
+      dto.cropData,
+    );
   }
 
   @Get(":id/source")
@@ -57,7 +62,10 @@ export class MediaController {
       throw new NotFoundException("Imagen no encontrada");
     }
 
-    return { sourceUrl: image.sourceUrl ?? null };
+    return {
+      sourceUrl: image.sourceUrl ?? null,
+      cropData: image.cropData ?? null,
+    };
   }
 
   @Get(":id")

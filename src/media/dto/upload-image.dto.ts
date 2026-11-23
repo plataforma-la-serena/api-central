@@ -1,4 +1,11 @@
-import { IsIn, IsOptional, IsString, MaxLength, MinLength } from "class-validator";
+import {
+  IsIn,
+  IsObject,
+  IsOptional,
+  IsString,
+  MaxLength,
+  MinLength,
+} from "class-validator";
 
 export const ALLOWED_IMAGE_TYPES = ["image/jpeg", "image/png"] as const;
 
@@ -15,4 +22,8 @@ export class UploadImageDto {
   @IsString()
   @MaxLength(600)
   sourceUrl?: string;
+
+  @IsOptional()
+  @IsObject()
+  cropData?: Record<string, number>;
 }
