@@ -19,6 +19,7 @@ const contextSelect = {
   capacity: true,
   features: true,
   images: true,
+  coverIndex: true,
 } satisfies Prisma.ApartmentSelect;
 
 @Injectable()

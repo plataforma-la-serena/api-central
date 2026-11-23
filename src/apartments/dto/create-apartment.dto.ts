@@ -46,6 +46,11 @@ export class CreateApartmentDto {
   images?: string[];
 
   @IsOptional()
+  @IsInt()
+  @Min(0)
+  coverIndex?: number;
+
+  @IsOptional()
   @IsBoolean()
   isActive?: boolean;
 }
