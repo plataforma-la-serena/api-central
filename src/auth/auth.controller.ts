@@ -5,6 +5,7 @@ import {
   HttpCode,
   HttpException,
   HttpStatus,
+  Logger,
   Post,
   Req,
   Res,
@@ -23,6 +24,7 @@ import { LoginDto } from "./dto/login.dto";
 
 const LOGIN_WINDOW_MS = 10 * 60 * 1000;
 const LOGIN_MAX_ATTEMPTS = 10;
+const logger = new Logger("AuthController");
 const loginAttempts = new Map<
   string,
   { count: number; resetAt: number }
@@ -46,6 +48,7 @@ function registerAttempt(ip: string): void {
   }
 
   if (record.count >= LOGIN_MAX_ATTEMPTS) {
+    logger.warn({ ip }, "login bloqueado por rate limit");
     throw new HttpException(
       "Demasiados intentos. Probá más tarde.",
       HttpStatus.TOO_MANY_REQUESTS,
@@ -81,6 +84,8 @@ export class AuthController {
       return result;
     } catch (error) {
       recordFailure(ip);
+      // Nunca se registra la contraseña ni se confirma si el email existe.
+      logger.warn({ ip, email: dto.email }, "login fallido");
       throw error;
     }
   }
