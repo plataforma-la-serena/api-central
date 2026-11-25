@@ -1,5 +1,5 @@
 import { Injectable, NotFoundException } from "@nestjs/common";
-import { MessageRole } from "@prisma/client";
+import { MessageRole, Prisma } from "@prisma/client";
 import { PrismaService } from "../prisma/prisma.service";
 
 @Injectable()
@@ -135,11 +135,28 @@ export class ChatService {
   }
 
   private async ensureSession(phone: string) {
-    return this.prisma.chatSession.upsert({
-      where: { phoneNumber: phone },
-      update: {},
-      create: { phoneNumber: phone },
-    });
+    try {
+      return await this.prisma.chatSession.upsert({
+        where: { phoneNumber: phone },
+        update: {},
+        create: { phoneNumber: phone },
+      });
+    } catch (error) {
+      // Dos mensajes simultáneos del mismo número pueden competir en el alta.
+      // Si otro request ya creó la sesión, se reutiliza.
+      if (
+        error instanceof Prisma.PrismaClientKnownRequestError &&
+        error.code === "P2002"
+      ) {
+        const existing = await this.prisma.chatSession.findUnique({
+          where: { phoneNumber: phone },
+        });
+        if (existing) {
+          return existing;
+        }
+      }
+      throw error;
+    }
   }
 
   private async findSession(id: string) {
