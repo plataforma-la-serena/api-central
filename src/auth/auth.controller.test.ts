@@ -1,3 +1,4 @@
+import { randomBytes } from "node:crypto";
 import { HttpStatus, UnauthorizedException } from "@nestjs/common";
 import type { Response } from "express";
 import { describe, expect, it, vi } from "vitest";
@@ -24,7 +25,8 @@ function asResponse(res: ReturnType<typeof response>): Response {
   return res as unknown as Response;
 }
 
-const dto = { email: "admin@laserena.local", password: "secreto-de-prueba" };
+// Credencial efímera: el repo no guarda contraseñas literales ni de prueba.
+const dto = { email: "admin@laserena.local", password: randomBytes(12).toString("hex") };
 
 describe("AuthController", () => {
   it("setea una cookie HttpOnly al iniciar sesión", async () => {
