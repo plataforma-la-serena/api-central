@@ -1,0 +1,59 @@
+import {
+  Body,
+  Controller,
+  Get,
+  Param,
+  Patch,
+  Post,
+  UseGuards,
+} from "@nestjs/common";
+import { ApartmentsService } from "../apartments/apartments.service";
+import { ServiceTokenGuard } from "../auth/service-token.guard";
+import { ChatService } from "../chat/chat.service";
+import { AppendMessageDto } from "../chat/dto/append-message.dto";
+import { UpdateBotDto } from "./dto/update-bot.dto";
+import { UpdateLeadDto } from "./dto/update-lead.dto";
+
+@UseGuards(ServiceTokenGuard)
+@Controller("internal")
+export class InternalController {
+  constructor(
+    private readonly apartments: ApartmentsService,
+    private readonly chat: ChatService,
+  ) {}
+
+  @Get("context")
+  context() {
+    return this.apartments.context();
+  }
+
+  @Get("chat-sessions/:phone")
+  session(@Param("phone") phone: string) {
+    return this.chat.getSessionByPhone(phone);
+  }
+
+  @Post("chat-sessions/:phone/messages")
+  append(@Param("phone") phone: string, @Body() dto: AppendMessageDto) {
+    return this.chat.appendMessage(phone, dto.role, dto.content);
+  }
+
+  @Patch("chat-sessions/:phone/bot")
+  bot(@Param("phone") phone: string, @Body() dto: UpdateBotDto) {
+    return this.chat.setBotActiveByPhone(phone, dto.botActive);
+  }
+
+  @Patch("chat-sessions/:phone/lead")
+  lead(@Param("phone") phone: string, @Body() dto: UpdateLeadDto) {
+    return this.chat.setLeadByPhone(
+      phone,
+      dto.name,
+      dto.wantsReservation,
+      dto.wantsHuman,
+    );
+  }
+
+  @Get("chat-sessions/:phone/window")
+  window(@Param("phone") phone: string) {
+    return this.chat.windowByPhone(phone);
+  }
+}
