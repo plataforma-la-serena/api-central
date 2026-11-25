@@ -13,21 +13,7 @@ import type { Response } from "express";
 import { AdminAuthGuard } from "../auth/admin-auth.guard";
 import { MediaService } from "./media.service";
 import { UploadImageDto } from "./dto/upload-image.dto";
-
-const MAX_BYTES = 5 * 1024 * 1024;
-
-const SIGNATURES: Record<string, number[]> = {
-  "image/jpeg": [0xff, 0xd8, 0xff],
-  "image/png": [0x89, 0x50, 0x4e, 0x47],
-};
-
-function looksLikeImage(data: Uint8Array, mimeType: string): boolean {
-  const signature = SIGNATURES[mimeType];
-  if (!signature) {
-    return false;
-  }
-  return signature.every((byte, index) => data[index] === byte);
-}
+import { MAX_IMAGE_BYTES, looksLikeImage } from "./image-signature";
 
 @Controller("media")
 export class MediaController {
@@ -38,7 +24,7 @@ export class MediaController {
   async upload(@Body() dto: UploadImageDto) {
     const data = new Uint8Array(Buffer.from(dto.dataBase64, "base64"));
 
-    if (data.length === 0 || data.length > MAX_BYTES) {
+    if (data.length === 0 || data.length > MAX_IMAGE_BYTES) {
       throw new BadRequestException("La imagen debe pesar menos de 5 MB");
     }
 
