@@ -1,0 +1,30 @@
+name: CI
+
+on:
+  push:
+    branches: ["1", "chore/quality-audit"]
+  pull_request:
+
+jobs:
+  quality:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - run: npm run typecheck
+      - run: npm run coverage
+      - run: npm run build
+      - name: Auditoría de dependencias
+        # 4 altas conocidas en el CLI de Prisma (@prisma/config → deepmerge-ts/effect).
+        # Se resuelven al migrar a Prisma 7; hasta entonces el gate falla en críticas.
+        run: npm audit --omit=dev --audit-level=critical
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: coverage
+          path: coverage/
+          retention-days: 14
